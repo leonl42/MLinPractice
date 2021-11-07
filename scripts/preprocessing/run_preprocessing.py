@@ -13,7 +13,14 @@ import pandas as pd
 from sklearn.pipeline import make_pipeline
 from scripts.preprocessing.punctuation_remover import PunctuationRemover
 from scripts.preprocessing.tokenizer import Tokenizer
-from scripts.util import COLUMN_TWEET, SUFFIX_TOKENIZED,  PANDAS_DTYPE
+from scripts.preprocessing.stopwords import StopWords
+from scripts.preprocessing.hashtag_remover import HashtagRemover
+from scripts.preprocessing.lower import Lower
+from scripts.preprocessing.abbrevations import Abbrevations
+from scripts.preprocessing.timedeltas import Timedeltas
+from scripts.preprocessing.lemmatization import Lemmatization
+from scripts.preprocessing.post import Post
+from scripts.util import COLUMN_TWEET, SUFFIX_TOKENIZED, PANDAS_DTYPE
 
 # setting up CLI
 parser = argparse.ArgumentParser(description = "Various preprocessing steps")
@@ -22,6 +29,13 @@ parser.add_argument("output_file", help = "path to the output csv file")
 parser.add_argument("-p", "--punctuation", action = "store_true", help = "remove punctuation")
 parser.add_argument("-t", "--tokenize", action = "store_true", help = "tokenize given column into individual words")
 parser.add_argument("--tokenize_input", help = "input column to tokenize", default = COLUMN_TWEET)
+parser.add_argument("-tdeltas", "--timedeltas", action = "store_true", help = "create timedeltas for tweet creation datetime")
+parser.add_argument("-l", "--lower", action = "store_true", help = "make every letter in the tweet lowercase")
+parser.add_argument("-ab", "--abbrevations", action = "store_true", help = "replace abbrevations with their long form")
+parser.add_argument("-sw", "--stopwords", action = "store_true", help = "remove stopwords from the tweet")
+parser.add_argument("-hr","--hashtag_removal", action = "store_true", help = "remove hashtags from the tweet")
+parser.add_argument("-post", "--post", action = "store_true", help = "part of speech tag the tweet")
+parser.add_argument("-lemma", "--lemmatization", action = "store_true", help = "lemmatize the tweet")
 parser.add_argument("-e", "--export_file", help = "create a pipeline and export to the given location", default = None)
 args = parser.parse_args()
 
@@ -30,10 +44,24 @@ df = pd.read_csv(args.input_file, quoting = csv.QUOTE_NONNUMERIC, lineterminator
 
 # collect all preprocessors
 preprocessors = []
+if args.hashtag_removal:
+    preprocessors.append(HashtagRemover())
 if args.punctuation:
     preprocessors.append(PunctuationRemover())
+if args.lower:
+    preprocessors.append(Lower())
+if args.abbrevations:
+    preprocessors.append(Abbrevations())
 if args.tokenize:
     preprocessors.append(Tokenizer(args.tokenize_input, args.tokenize_input + SUFFIX_TOKENIZED))
+if args.timedeltas:
+    preprocessors.append(Timedeltas())
+if args.stopwords:
+    preprocessors.append(StopWords())
+if args.post:
+    preprocessors.append(Post())
+if args.lemmatization:
+    preprocessors.append(Lemmatization())
 
 # call all preprocessing steps
 for preprocessor in preprocessors:

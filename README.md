@@ -57,8 +57,19 @@ The script `run_preprocessing.py` is used to run various preprocessing steps on 
 ```python -m code.preprocessing.run_preprocessing path/to/input.csv path/to/output.csv```
 Here, `input.csv` is a csv file (ideally the output of `create_labels.py`), while `output.csv` is the csv file where the output will be written.
 The preprocessing steps to take can be configured with the following flags:
-- `-p` or `--punctuation`: A new column "tweet_no_punctuation" is created, where all punctuation is removed from the original tweet. (See `code/preprocessing/punctuation_remover.py` for more details)
+- `-hr`or `--hashtag_removal`: When specified, all hashtags will be removed from the tweet. This will overwrite the original tweet column.
+- `-p` or `--punctuation`: Will remove all punctuation from the tweet. Will overwrite the original tweet column (See `code/preprocessing/punctuation_remover.py` for more details)
+- `-l`or `--lower`: Converts the tweet to lowercase. Will overwrite the original tweet column
+- `-ab`or `--abbrevations`: Will replace abbrevations in the tweet with their corresponding long form. Will overwrite the original tweet column.
 - `-t`or `--tokenize`: Tokenize the given column (can be specified by `--tokenize_input`, default = "tweet"), and create new column with suffix "_tokenized" containing tokenized tweet.
+- `-tdeltas`or `--timedeltas`: Create 3 timedeltas, one for the year, one for the date and one for the time. Reference time will be the twitter creation day. Creates a new column
+where a list of timedeltas is stored.
+- `-sw`or `--stopwords`: Will remove stopwords from the tweet. The tweet has to be tokenized in order to remove stopwords.
+The tweet_tokenized column will be overwritten.
+- `-post`or `--post`: Will part of speech tag the tweet. The tweet is expected to be tokenized. A new column with the 
+name of the original tweet column and the suffix "_post" will be created.
+- `-lemma`or `--lemmatization`: Will replace each word in the tweet with its corresponding lemma. The tweet is expected to be part of speech tagged.
+The that was created when the tweet was part of speech tagged will be overwritten.
 
 Moreover, the script accepts the following optional parameters:
 - `-e` or `--export` gives the path to a pickle file where an sklearn pipeline of the different preprocessing steps will be stored for later usage.
