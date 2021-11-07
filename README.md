@@ -64,6 +64,8 @@ The preprocessing steps to take can be configured with the following flags:
 - `-t`or `--tokenize`: Tokenize the given column (can be specified by `--tokenize_input`, default = "tweet"), and create new column with suffix "_tokenized" containing tokenized tweet.
 - `-tdeltas`or `--timedeltas`: Create 3 timedeltas, one for the year, one for the date and one for the time. Reference time will be the twitter creation day. Creates a new column
 where a list of timedeltas is stored.
+- `-sw`or `--stopwords`: Will remove stopwords from the tweet. The tweet has to be tokenized in order to remove stopwords.
+The tweet_tokenized column will be overwritten.
 
 Moreover, the script accepts the following optional parameters:
 - `-e` or `--export` gives the path to a pickle file where an sklearn pipeline of the different preprocessing steps will be stored for later usage.
