@@ -62,7 +62,8 @@ The preprocessing steps to take can be configured with the following flags:
 - `-l`or `--lower`: Converts the tweet to lowercase. Will overwrite the original tweet column
 - `-ab`or `--abbrevations`: Will replace abbrevations in the tweet with their corresponding long form. Will overwrite the original tweet column.
 - `-t`or `--tokenize`: Tokenize the given column (can be specified by `--tokenize_input`, default = "tweet"), and create new column with suffix "_tokenized" containing tokenized tweet.
-
+- `-tdeltas`or `--timedeltas`: Create 3 timedeltas, one for the year, one for the date and one for the time. Reference time will be the twitter creation day. Creates a new column
+where a list of timedeltas is stored.
 
 Moreover, the script accepts the following optional parameters:
 - `-e` or `--export` gives the path to a pickle file where an sklearn pipeline of the different preprocessing steps will be stored for later usage.
