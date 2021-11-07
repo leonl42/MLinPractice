@@ -66,6 +66,8 @@ The preprocessing steps to take can be configured with the following flags:
 where a list of timedeltas is stored.
 - `-sw`or `--stopwords`: Will remove stopwords from the tweet. The tweet has to be tokenized in order to remove stopwords.
 The tweet_tokenized column will be overwritten.
+- `-post`or `--post`: Will part of speech tag the tweet. The tweet is expected to be tokenized. A new column with the 
+name of the original tweet column and the suffix "_post" will be created.
 
 Moreover, the script accepts the following optional parameters:
 - `-e` or `--export` gives the path to a pickle file where an sklearn pipeline of the different preprocessing steps will be stored for later usage.

@@ -18,6 +18,7 @@ from scripts.preprocessing.hashtag_remover import HashtagRemover
 from scripts.preprocessing.lower import Lower
 from scripts.preprocessing.abbrevations import Abbrevations
 from scripts.preprocessing.timedeltas import Timedeltas
+from scripts.preprocessing.post import Post
 from scripts.util import COLUMN_TWEET, SUFFIX_TOKENIZED, PANDAS_DTYPE
 
 # setting up CLI
@@ -32,6 +33,7 @@ parser.add_argument("-l", "--lower", action = "store_true", help = "make every l
 parser.add_argument("-ab", "--abbrevations", action = "store_true", help = "replace abbrevations with their long form")
 parser.add_argument("-sw", "--stopwords", action = "store_true", help = "remove stopwords from the tweet")
 parser.add_argument("-hr","--hashtag_removal", action = "store_true", help = "remove hashtags from the tweet")
+parser.add_argument("-post", "--post", action = "store_true", help = "part of speech tag the tweet")
 parser.add_argument("-e", "--export_file", help = "create a pipeline and export to the given location", default = None)
 args = parser.parse_args()
 
@@ -54,6 +56,8 @@ if args.timedeltas:
     preprocessors.append(Timedeltas())
 if args.stopwords:
     preprocessors.append(StopWords())
+if args.post:
+    preprocessors.append(Post())
 
 # call all preprocessing steps
 for preprocessor in preprocessors:
