@@ -15,6 +15,7 @@ from scripts.preprocessing.punctuation_remover import PunctuationRemover
 from scripts.preprocessing.tokenizer import Tokenizer
 from scripts.preprocessing.hashtag_remover import HashtagRemover
 from scripts.preprocessing.lower import Lower
+from scripts.preprocessing.abbrevations import Abbrevations
 from scripts.util import COLUMN_TWEET, SUFFIX_TOKENIZED, PANDAS_DTYPE
 
 # setting up CLI
@@ -25,6 +26,7 @@ parser.add_argument("-p", "--punctuation", action = "store_true", help = "remove
 parser.add_argument("-t", "--tokenize", action = "store_true", help = "tokenize given column into individual words")
 parser.add_argument("--tokenize_input", help = "input column to tokenize", default = COLUMN_TWEET)
 parser.add_argument("-l", "--lower", action = "store_true", help = "make every letter in the tweet lowercase")
+parser.add_argument("-ab", "--abbrevations", action = "store_true", help = "replace abbrevations with their long form")
 parser.add_argument("-hr","--hashtag_removal", action = "store_true", help = "remove hashtags from the tweet")
 parser.add_argument("-e", "--export_file", help = "create a pipeline and export to the given location", default = None)
 args = parser.parse_args()
@@ -40,6 +42,8 @@ if args.punctuation:
     preprocessors.append(PunctuationRemover())
 if args.lower:
     preprocessors.append(Lower())
+if args.abbrevations:
+    preprocessors.append(Abbrevations())
 if args.tokenize:
     preprocessors.append(Tokenizer(args.tokenize_input, args.tokenize_input + SUFFIX_TOKENIZED))
 
