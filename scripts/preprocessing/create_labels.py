@@ -11,7 +11,7 @@ Created on Tue Sep 28 15:55:44 2021
 
 import os, argparse, csv
 import pandas as pd
-from scripts.util import COLUMN_LIKES, COLUMN_RETWEETS, COLUMN_LABEL
+from scripts.util import COLUMN_LIKES, COLUMN_RETWEETS, COLUMN_LABEL, PANDAS_DTYPE
 
 # setting up CLI
 parser = argparse.ArgumentParser(description = "Creation of Labels")
@@ -28,7 +28,7 @@ file_paths = [args.data_directory + f for f in os.listdir(args.data_directory) i
 # load all csv files
 dfs = []
 for file_path in file_paths:
-    dfs.append(pd.read_csv(file_path, quoting = csv.QUOTE_NONNUMERIC, lineterminator = "\n"))
+    dfs.append(pd.read_csv(file_path, quoting = csv.QUOTE_NONNUMERIC, lineterminator = "\n", dtype = PANDAS_DTYPE))
 
 # join all data into a single DataFrame
 df = pd.concat(dfs)
