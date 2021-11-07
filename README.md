@@ -59,6 +59,7 @@ Here, `input.csv` is a csv file (ideally the output of `create_labels.py`), whil
 The preprocessing steps to take can be configured with the following flags:
 - `-hr`or `--hashtag_removal`: When specified, all hashtags will be removed from the tweet. This will overwrite the original tweet column.
 - `-p` or `--punctuation`: Will remove all punctuation from the tweet. Will overwrite the original tweet column (See `code/preprocessing/punctuation_remover.py` for more details)
+- `-l`or `--lower`: Converts the tweet to lowercase. Will overwrite the original tweet column
 - `-t`or `--tokenize`: Tokenize the given column (can be specified by `--tokenize_input`, default = "tweet"), and create new column with suffix "_tokenized" containing tokenized tweet.
 
 
