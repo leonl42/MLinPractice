@@ -68,6 +68,8 @@ where a list of timedeltas is stored.
 The tweet_tokenized column will be overwritten.
 - `-post`or `--post`: Will part of speech tag the tweet. The tweet is expected to be tokenized. A new column with the 
 name of the original tweet column and the suffix "_post" will be created.
+- `-lemma`or `--lemmatization`: Will replace each word in the tweet with its corresponding lemma. The tweet is expected to be part of speech tagged.
+The that was created when the tweet was part of speech tagged will be overwritten.
 
 Moreover, the script accepts the following optional parameters:
 - `-e` or `--export` gives the path to a pickle file where an sklearn pipeline of the different preprocessing steps will be stored for later usage.
