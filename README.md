@@ -101,6 +101,8 @@ The features to be extracted can be configured with the following optional param
 - `-t` or `--timedeltas`: Convert the already preprocessed timedeltas into a numpy feature array
 - `--hashtags`: Specify how many hashtags should be used for one hot encoding. More frequent hashtags will be preferred. If 
 no number is specified, no hashtags will be used.
+- `--ngrams`: Determine the overall frequency distribution of all ngrams, take the most common ngrams and use one hot encoding
+to convert these into a feature. User has to specify 'n' and the number of ngrams to use for one hot encoding. More frequent ngrams are preferred.
  
 Moreover, the script support importing and exporting fitted feature extractors with the following optional arguments:
 - `-i` or `--import_file`: Load a configured and fitted feature extraction from the given pickle file. Ignore all parameters that configure the features to extract.
