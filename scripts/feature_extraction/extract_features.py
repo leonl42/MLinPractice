@@ -14,6 +14,7 @@ import numpy as np
 from scripts.feature_extraction.character_length import CharacterLength
 from scripts.feature_extraction.feature_collector import FeatureCollector
 from scripts.feature_extraction.feature_timedeltas import FeatureTimedeltas
+from scripts.feature_extraction.feature_hashtags import FeatureHashtags
 from scripts.util import COLUMN_TWEET, COLUMN_LABEL, PANDAS_DTYPE, COLUMN_TIMEDELTAS
 
 
@@ -25,6 +26,7 @@ parser.add_argument("-e", "--export_file", help = "create a pipeline and export 
 parser.add_argument("-i", "--import_file", help = "import an existing pipeline from the given location", default = None)
 parser.add_argument("-c", "--char_length", action = "store_true", help = "compute the number of characters in the tweet")
 parser.add_argument("-t", "--timedeltas", action = "store_true", help = "convert preprocessed timedeltas into a numpy array")
+parser.add_argument("--hashtags", type = int, help = "number of most frequent hashtags to use for one hot encoding")
 args = parser.parse_args()
 
 # load data
@@ -44,6 +46,8 @@ else:    # need to create FeatureCollector manually
         features.append(CharacterLength(COLUMN_TWEET))
     if args.timedeltas:
         features.append(FeatureTimedeltas(COLUMN_TIMEDELTAS))
+    if args.hashtags is not None:
+        features.append(FeatureHashtags(args.hashtags))
     
     # create overall FeatureCollector
     feature_collector = FeatureCollector(features)
