@@ -2,12 +2,12 @@
 # overall pipeline for the ML experiments
 
 echo "loading data"
-code/load_data.sh
+scripts/load_data.sh
 echo "preprocessing"
-code/preprocessing.sh
+scripts/preprocessing.sh
 echo "feature extraction"
-code/feature_extraction.sh
+scripts/feature_extraction.sh
 echo "dimensionality reduction"
-code/dimensionality_reduction.sh
+scripts/dimensionality_reduction.sh
 echo "classification"
-code/classification.sh
+scripts/classification.sh
