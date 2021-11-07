@@ -13,7 +13,7 @@ import pandas as pd
 import numpy as np
 from scripts.feature_extraction.character_length import CharacterLength
 from scripts.feature_extraction.feature_collector import FeatureCollector
-from scripts.util import COLUMN_TWEET, COLUMN_LABEL
+from scripts.util import COLUMN_TWEET, COLUMN_LABEL, PANDAS_DTYPE
 
 
 # setting up CLI
@@ -26,7 +26,7 @@ parser.add_argument("-c", "--char_length", action = "store_true", help = "comput
 args = parser.parse_args()
 
 # load data
-df = pd.read_csv(args.input_file, quoting = csv.QUOTE_NONNUMERIC, lineterminator = "\n")
+df = pd.read_csv(args.input_file, quoting = csv.QUOTE_NONNUMERIC, lineterminator = "\n", dtype = PANDAS_DTYPE)
 
 if args.import_file is not None:
     # simply import an exisiting FeatureCollector

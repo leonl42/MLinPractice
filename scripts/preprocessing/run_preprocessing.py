@@ -13,7 +13,7 @@ import pandas as pd
 from sklearn.pipeline import make_pipeline
 from scripts.preprocessing.punctuation_remover import PunctuationRemover
 from scripts.preprocessing.tokenizer import Tokenizer
-from scripts.util import COLUMN_TWEET, SUFFIX_TOKENIZED
+from scripts.util import COLUMN_TWEET, SUFFIX_TOKENIZED,  PANDAS_DTYPE
 
 # setting up CLI
 parser = argparse.ArgumentParser(description = "Various preprocessing steps")
@@ -26,7 +26,7 @@ parser.add_argument("-e", "--export_file", help = "create a pipeline and export 
 args = parser.parse_args()
 
 # load data
-df = pd.read_csv(args.input_file, quoting = csv.QUOTE_NONNUMERIC, lineterminator = "\n")
+df = pd.read_csv(args.input_file, quoting = csv.QUOTE_NONNUMERIC, lineterminator = "\n", dtype = PANDAS_DTYPE)
 
 # collect all preprocessors
 preprocessors = []
