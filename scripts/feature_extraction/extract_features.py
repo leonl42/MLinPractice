@@ -13,7 +13,8 @@ import pandas as pd
 import numpy as np
 from scripts.feature_extraction.character_length import CharacterLength
 from scripts.feature_extraction.feature_collector import FeatureCollector
-from scripts.util import COLUMN_TWEET, COLUMN_LABEL, PANDAS_DTYPE
+from scripts.feature_extraction.feature_timedeltas import FeatureTimedeltas
+from scripts.util import COLUMN_TWEET, COLUMN_LABEL, PANDAS_DTYPE, COLUMN_TIMEDELTAS
 
 
 # setting up CLI
@@ -23,6 +24,7 @@ parser.add_argument("output_file", help = "path to the output pickle file")
 parser.add_argument("-e", "--export_file", help = "create a pipeline and export to the given location", default = None)
 parser.add_argument("-i", "--import_file", help = "import an existing pipeline from the given location", default = None)
 parser.add_argument("-c", "--char_length", action = "store_true", help = "compute the number of characters in the tweet")
+parser.add_argument("-t", "--timedeltas", action = "store_true", help = "convert preprocessed timedeltas into a numpy array")
 args = parser.parse_args()
 
 # load data
@@ -40,6 +42,8 @@ else:    # need to create FeatureCollector manually
     if args.char_length:
         # character length of original tweet (without any changes)
         features.append(CharacterLength(COLUMN_TWEET))
+    if args.timedeltas:
+        features.append(FeatureTimedeltas(COLUMN_TIMEDELTAS))
     
     # create overall FeatureCollector
     feature_collector = FeatureCollector(features)
