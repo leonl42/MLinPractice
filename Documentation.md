@@ -3,7 +3,7 @@
 
 1. [About](#About)
     - [Goals](##Goals)
-    - [About the Data set](##About the Data set)
+    - [About the dataset](##About the dataset)
 2. [Preprocessing](#Preprocessing)
     - [Labeling the data](##Labeling the data)
     - [Splitting the data](##Splitting the data)
@@ -31,18 +31,19 @@
     - [Support vector machine](##Support vector machine)
     - [Multi layer perceptron](##Multi layer perceptron)
     - [Randomforest](##Randomforest)
+6. [Evaluation](#Evaluation)
 
-## About
+## About <a name="About"></a>
 
 A few sentences about the project
 
-### Goals
+### Goals <a name="Goals"></a>
 
 This project was implemented for the course "Machine Learning in practice" from the university
 of osnabrueck in the winter term 21/22. Its goal is to develop a machine learning
 pipeline, which is able to determine if a tweet is going viral. 
 
-### About the Data set
+### About the dataset <a name="About the dataset"></a>
 
 I am using a dataset which contains information and metadata of almost 300.000 tweets,
 which were posted by verified accounts. And here is the biggest weakness of the dataset.
@@ -54,7 +55,7 @@ lead to a bigger follower base and the more followers you have, the more people
 will like and share your tweet. Another effect is that tweets from verified persons
 are usually liked and shared more than tweets from regular people.
 
-## Preprocessing
+## Preprocessing <a name="Preprocessing"></a>
 
 Let's consider a huge dataset from different websites, including a lot of customer data. 
 These websites might save their data in different format. The format from website 
@@ -75,7 +76,7 @@ I decided not to create an extra column with a suffix in the .csv file for every
 that, in most cases, each preprocessing step would overwrite an already existing column. This makes it easier for preprocessing
 and feature extraction, as I don't have to worry about a suffix missing if I try to exclude a preprocessing step.
 
-### Labeling the data 
+### Labeling the data <a name="Labeling the data"></a>
 
 As the data comes unlabeled, the first step is to assign a label to it. In this case, the label is either going to be "viral", represented
 by a 1, or "not viral", represented by a 0. For a tweet to be viral, its likes and retweets combined have to be greater than 50. 
@@ -93,14 +94,14 @@ distribution (50% positive, 50% positive) but a tweet with 10 likes can't be con
 the threshold as high as possible while still maintaining a good distribution. And because the threshold of 50 has a distribution
 of roughly 90/10, which is still acceptable considering the 300.000 tweets, I decided to stick with 50.
 
-### Splitting the data
+### Splitting the data <a name="Splitting the data"></a>
 
 There are several ways to split your data, and the most important factor when deciding which method to take is the number of samples.
 Considering the big data set, I decided to split the data into a training, a validation and a test set with the distribution 60/20/20.
 The training set will be, as the name already says, used for training the model, the validation set will be used
 for optimizing the hyperparameters and the test set will be used for evaluating the final model.
 
-### Timedeltas
+### Timedeltas <a name="Timedeltas"></a>
 
 From now on, I will refer to the "whole date", consisting of year, month, day, time... as "datetime"
 and to the date, consisting only of month and day as "date"
@@ -114,7 +115,7 @@ as no tweet could have been posted before this.
 
 The following preprocessing steps will be about preprocessing the semantics of the actual tweet and not the metadata.
 
-### Removing Hashtags
+### Removing Hashtags <a name="Removing Hashtags"></a>
 
 The dataset is formatted in such a way, that hashtags which were used are still present in the tweet and 
 are stored in a list in an extra column. Because this extra column will be used when getting the most used hashtags,
@@ -131,7 +132,7 @@ Of course, one problem could be that the meaning of the tweet will be destroyed,
 decides to use a hashtag in the sentence: "I #didn't do it" -> "I do it". But this problem will be
 neglected, as there is no "high end" natural language processing step in the pipeline.
 
-### Punctuation remover
+### Punctuation remover <a name="Punctuation remover"></a>
 
 Removing punctuation reduces the overall complexity of the tweet, and makes it easier to apply basic natural language
 processing. Consider the tweet: "I love dogs, cats and mice", and its tokenized form ["I", "love", "dogs", ",", "cats", "and", "mice"].
@@ -151,7 +152,7 @@ careful to not delete the "’", because "isnt" will not be recognized by the ab
 To get a list with all the punctuation that should be removed, I decided to use pythons build in string.punctuation constant.
 And luckily the "’" symbol is not a part of that list, so there is no need to worry about the above problem.  
 
-### Lowercase
+### Lowercase <a name="Lowercase"></a>
 
 Because most preprocessing steps deal with recognizing and replacing words, it is convenient to not have to worry about lower and upper case in
 the tweet. For this reason, all letters in the tweet will be replaced with their corresponding lower case letter. In addition, this reduces
@@ -162,17 +163,17 @@ However, this might lead to a loss of information. On the internet it is common 
 in the sentence with an upper case letter. So the sentences "I like dogs" and "I lIkE dOgS" would have completely different meanings.
 But I assume that instances where cases matter appear relatively little to none in the database, and the positive effects predominate.
 
-### Abbrevation replacement
+### Abbrevation replacement <a name="Abbrevation replacement"></a>
 
 The English language consists of many abbreviations and short forms, like "isn't" or "doesn't". They unnecessarily boost the number
 of total, words and ngrams and are therefore superfluous, and therefore will be replaced with their corresponding long form. 
 For this, I made a dictionary containing the most common abbreviations.
 
-### Tokenization
+### Tokenization <a name="Tokenization"></a>
 
 Because it is hard to access individual words if the tweet is represented as a string, the tweet will be tokenized using nltks build in tokenizer.
 
-### Stopword removal
+### Stopword removal <a name="Stopword removal"></a>
 
 Words which appear everywhere in a language are called stopwords. Consider "are" or "is". The problem is, that these kinds of words, because of their high frequency,
 store no valuable information about the semantics of a sentence. For example, when analysing unigrams, the most 5 frequent unigrams will with a high
@@ -188,12 +189,12 @@ However, an important aspect is to think about how important stopword removal re
 like, taking the features with the highest mutual information, will automatically dispose of these stopword features. But to lower the number of data to analyse and to lower the runtime,
 they will still be removed.
 
-### Part of speech tagging
+### Part of speech tagging <a name="Part of speech tagging"></a>
 
 This preprocessing step will assign the corresponding part of speech tag to each word using nltks build in pos tagger. This information will be used for
 further preprocessing. For example, take the sentence ["I", "went", "viral"]. The associated part of speech tagged sentence would look like this: [("I", "PRP"),("went", "VBD"),("viral", "JJ")]
 
-### Lemmatization
+### Lemmatization <a name="Lemmatization"></a>
 
 Consider the sentences, "I ran to you", "I run to you". Besides the tense, these two sentences have the exact same meaning. But as mentioned earlier, these 
 two sentences would be completely different for a computer. And in addition to that, these two sentences would only share one out of three ngrams. Lemmatization 
@@ -207,13 +208,13 @@ part of speech tag will be transformed into a wordnet position and will be given
 Of course, as mentioned earlier, this leads to a loss of information, e.g. the tense of a sentence. But the gained standardizing of the 
 dataset is worth more.
 
-## Feature Extraction
+## Feature Extraction <a name="Feature extraction"></a>
 
 To know which features to extract for the classifier, one has to have a basic knowledge about twitter and take a look at the data set.
 In order for a tweet to get viral, as a first step, it has to be found by people, and as a second step, people have to like and retweet it. 
 The following features will take either one of these steps into consideration.
 
-### Hashtags and timedeltas
+### Hashtags and timedeltas <a name="Hashtags and timedeltas"></a>
 
 An important functionality of Twitter are hashtags. By mentioning a hashtag with the prefix "#" in your tweet, it will be associated
 with all other tweets that have this hashtag. In addition to that, users can search for specific hashtags and look at all these associated tweets.
@@ -270,7 +271,7 @@ hashtags tend to go viral in different years. The hashtag "MerryChristmas" will 
 probably only go viral in the summer. And the hashtag "HappyNewYear2021" will probably go viral only once, namely at the end of 2020. So using this
 hashtag in the year 2021, is not going to get you any likes or retweets, maybe only a few comments which state that the lockdown did you no good.
 
-### ngrams and character length
+### ngrams and character length <a name="ngrams and character length"></a>
 
 The second step for a tweet to go viral is, people have to like and retweet it. For this, the actual content of the tweet is important.
 To get a general understanding of a tweets' semantics, I extract the 100 most frequent bigrams and use one hot encoding to determine
@@ -299,13 +300,13 @@ while short tweets are easier to read.
 According to the dataset, longer tweets tend to go more viral, so there could be some dependency, but
 it is left to the dimensionality reduction method and the classifier to figure this out.
 
-## Dimensionality reduction
+## Dimensionality reduction <a name="Dimensionality reduction"></a>
 
 After the feature extraction pipeline, the resulting feature vector would have 204 dimensions. 100 for hashtags, 100
 for ngrams three for the timdeltas and one for the character length. Of course, giving any classifier a feature vector 
 of this high dimensionality is not feasable, because it extends runtime by a lot and not all features might be needed.
 
-### mutual information
+### mutual information <a name="mutual information"></a>
 
 This dimensionality reduction method works by selecting the features with the highest mutual information
 and producing a new feature vector consisting only of these few selected features. This 
@@ -328,7 +329,7 @@ mutual information and are therefore better suited for classification.
 The order in which the features appear doesn't imply that one has a greater information than the other, they are ordered in the same order
 they were extracted.
 
-### pca
+### pca <a name="pca"></a>
 
 While mutual information is great for determining the importance of specific features, pca yields better results. 
 Pca doesn't project onto the already existing axes, but rather onto the eigenvectors of the corresponding covariance matrix
@@ -342,27 +343,27 @@ This means, that one dimension is enough to explain 98.76% percent of the comple
 5 dimensions are enough to explain almost all variance in the dataset. Thus, the original feature vector
 will be projected onto five dimensions.
 
-## Evaluation metrics
+## Evaluation metrics <a name="Evaluation metrics"></a>
 
 In order to determine the performance of a machine learning model, one has to look at different metrics. For this project, 
 the following three metrics will be used and discussed. Of course, it is possible to implement more metrics, but these three
 should be enough to get an overall estimation of the performance of the model.
 
-### accuracy
+### accuracy <a name="accuracy"></a>
 
 The accuracy of a model is the percentage of data points which were classified correctly. This is a rather
 simple and non-informative evaluation metric, because it can have a high value without the classifier
 actually knowing anything. The reason for this will be discussed when looking at the different
 models.
 
-### Cohen Kappa
+### Cohen Kappa <a name="Cohen Kappa"></a>
 
 The Cohen Kappa metric "expresses the level of agreement between two annotators". [https://scikit-learn.org/stable/modules/generated/sklearn.metrics.cohen_kappa_score.html]
 This means, that Cohen's Kappa disregards the possibility of a model getting
 a high score by guessing randomly. A score of 0 means no agreement while
 a score of 100 means full agreement.
 
-### F1 score
+### F1 score <a name="F1 score"></a>
 
 The f1 metric is calculated with the following formula: 2*(precision*recall)/(precision+recall). [https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html]
 Precision is the proportion of viral classified tweets which are actually viral, and
@@ -370,9 +371,9 @@ recall is the proportion of all viral tweets which were classified as viral. The
 the better the precision and recall and the better the machine learning model.
 
 
-## Classification
+## Classification <a name="Classification"></a>
 
-### Majority vote classifier
+### Majority vote classifier <a name="Majority vote classifier"></a>
 
 This classifier classifies every data point as the most common label in the dataset. It is used as a baseline classifier
 to determine the performance of other classifiers 
@@ -387,7 +388,7 @@ but by looking at other evaluation metric, it becomes clear that this classifier
 can be explained by the high amount of non-viral tweets in the data set. By classifying each tweet as non-viral, the classifier
 will get 90% accuracy because 90% of all the tweets are not viral.
 
-### Support vector machine
+### Support vector machine <a name="Support vector machine"></a>
 
 The support vector machine projects the data onto a higher dimension and finds a hyperplane which can separate the data.
 This works, because with a high enough dimension, everything becomes linearly separable. 
@@ -396,7 +397,7 @@ For some reason, the training of the svm classifier took forever, the program wa
 is unusual because all other models took far less time. In so far, the svm is mentioned for completeness but there isn't
 any data for this classifier. However, it would probably perform similar to the mlp and randomforest.
 
-### Multi layer perceptron
+### Multi layer perceptron <a name="Multi layer perceptron"></a>
 
 The multi layer perceptron was tested with three layers with the sizes: 10 30 10
 
@@ -409,7 +410,7 @@ The multi layer perceptron classifier has approximately the same accuracy as the
 but a higher Cohen's kappa and f1 score. This indicates, that the model doesn't choose randomly or classifies everything
 as positive, but rather gets viral and non-viral labels correct.
 
-### Randomforest
+### Randomforest <a name="Randomforest"></a>
 
 Randomforests are a list of decision trees which were build using a random subset of features/data. The overall
 decision of the forest will be the majority from all single decisions. Using hyperparameter optimization, the 
@@ -458,6 +459,8 @@ is looking for when splitting. [https://scikit-learn.org/stable/modules/generate
 An interesting observation is that, the higher the max_depth, the higher the accuracy, kappa and f1 score on the training
 set. This is due to the model overfitting. By having a large depth and large number of nodes, the model is able to distinguish between
 every data point in the training set. 
+
+## Evaluation <a name="Evaluation"></a>
 
 After optimizing the hyperparameters, the model can be applied to the test set.
 
