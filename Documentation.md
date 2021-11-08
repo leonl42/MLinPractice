@@ -395,7 +395,7 @@ will get 90% accuracy because 90% of all the tweets are not viral.
 The support vector machine projects the data onto a higher dimension and finds a hyperplane which can separate the data.
 This works, because with a high enough dimension, everything becomes linearly separable. 
 
-For some reason, the training of the svm classifier took forever, the program wasn't finished after 2 hours. This
+For some reason, the training of the svm classifier took forever, the program didn't finish after 2 hours. This
 is unusual because all other models took far less time. In so far, the svm is mentioned for completeness but there isn't
 any data for this classifier. However, it would probably perform similar to the mlp and randomforest.
 
