@@ -13,6 +13,7 @@ from sklearn.dummy import DummyClassifier
 from sklearn.metrics import accuracy_score, cohen_kappa_score, f1_score
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn import svm
 from sklearn.pipeline import make_pipeline
 from mlflow import log_metric, log_param, set_tracking_uri
 
@@ -25,6 +26,7 @@ parser.add_argument("-i", "--import_file", help = "import a trained classifier f
 parser.add_argument("-m", "--majority", action = "store_true", help = "majority class classifier")
 parser.add_argument("-f", "--frequency", action = "store_true", help = "label frequency classifier")
 parser.add_argument("--knn", type = int, help = "k nearest neighbor classifier with the specified value of k", default = None)
+parser.add_argument("-svm", "--svm", action = "store_true", help = "support vector machine classifier", default = None)
 parser.add_argument("-a", "--accuracy", action = "store_true", help = "evaluate using accuracy")
 parser.add_argument("-k", "--kappa", action = "store_true", help = "evaluate using Cohen's kappa")
 parser.add_argument("-f1", "--f1", action = "store_true", help = "evaluate using F1 score")
@@ -62,8 +64,7 @@ else:   # manually set up a classifier
         print("    label frequency classifier")
         log_param("classifier", "frequency")
         params = {"classifier": "frequency"}
-        classifier = DummyClassifier(strategy = "stratified", random_state = args.seed)
-        
+        classifier = DummyClassifier(strategy = "stratified", random_state = args.seed)  
     
     elif args.knn is not None:
         print("    {0} nearest neighbor classifier".format(args.knn))
@@ -73,6 +74,13 @@ else:   # manually set up a classifier
         standardizer = StandardScaler()
         knn_classifier = KNeighborsClassifier(args.knn, n_jobs = -1)
         classifier = make_pipeline(standardizer, knn_classifier)
+    
+    elif args.svm:
+        print("    support vector machine classifier")
+        log_param("classifier", "svm")
+        params = {"classifier": "svm"}
+        standardizer = StandardScaler()
+        classifier = make_pipeline(standardizer,svm.SVC())
     
     classifier.fit(data["features"], data["labels"].ravel())
     log_param("dataset", "training")
