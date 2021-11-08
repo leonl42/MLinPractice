@@ -5,13 +5,14 @@ Console-based application for tweet classification.
 
 Created on Wed Sep 29 14:49:25 2021
 
-@author: lbechberger
+@author: lbechberger, leonl42
 """
 
 import argparse, pickle
 import pandas as pd
 from sklearn.pipeline import make_pipeline
-from scripts.util import COLUMN_TWEET
+from scripts.util import COLUMN_TWEET, COLUMN_HASHTAGS,COLUMN_TIMEZONE,COLUMN_DATE,COLUMN_TIME
+import datetime
 
 # setting up CLI
 parser = argparse.ArgumentParser(description = "Application")
@@ -51,6 +52,23 @@ while True:
     # if not terminated: create pandas DataFrame and put it through the pipeline
     df = pd.DataFrame()
     df[COLUMN_TWEET] = [tweet]
+    
+    # extract the hashtags from the tweet and store them in an extra column
+    tokenized = tweet.split(" ")
+    hashtags = []
+    for tweet in tokenized:
+        if tweet.startswith("#"):
+            tweet = tweet.replace("#","")
+            hashtags.append(tweet)
+      
+    df[COLUMN_HASHTAGS] = [hashtags]
+    
+    # get the current time and save it in the dataframe
+    now = datetime.date.today()
+    df[COLUMN_TIMEZONE] = datetime.datetime.now(datetime.timezone.utc).astimezone().strftime('%z')
+    df[COLUMN_DATE] = now.strftime('%Y-%m-%d')
+    df[COLUMN_TIME] = now.strftime('%H:%M:%S')
+
     
     prediction = pipeline.predict(df)
     confidence = pipeline.predict_proba(df)
