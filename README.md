@@ -97,7 +97,7 @@ Here, `input.csv` is the respective training, validation, or test set file creat
 - `"labels"`: a numpy array containing the target labels for the feature vectors (rows are training examples, only column is the label)
 
 The features to be extracted can be configured with the following optional parameters:
-- `-c` or `--char_length`: Count the number of characters in the "tweet" column of the data frame. (see code/feature_extraction/character_length.py)
+- `-c` or `--char_length`: Count the number of characters in the "tweet" column of the data frame. (see code/feature_extraction/feature_character_length.py)
 - `-t` or `--timedeltas`: Convert the already preprocessed timedeltas into a numpy feature array
 - `--hashtags`: Specify how many hashtags should be used for one hot encoding. More frequent hashtags will be preferred. If 
 no number is specified, no hashtags will be used.

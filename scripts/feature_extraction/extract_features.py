@@ -11,7 +11,7 @@ Created on Wed Sep 29 11:00:24 2021
 import argparse, csv, pickle
 import pandas as pd
 import numpy as np
-from scripts.feature_extraction.character_length import CharacterLength
+from scripts.feature_extraction.feature_character_length import FeatureCharacterLength
 from scripts.feature_extraction.feature_collector import FeatureCollector
 from scripts.feature_extraction.feature_timedeltas import FeatureTimedeltas
 from scripts.feature_extraction.feature_hashtags import FeatureHashtags
@@ -45,7 +45,7 @@ else:    # need to create FeatureCollector manually
     features = []
     if args.char_length:
         # character length of original tweet (without any changes)
-        features.append(CharacterLength(COLUMN_TWEET))
+        features.append(FeatureCharacterLength(COLUMN_TWEET))
     if args.timedeltas:
         features.append(FeatureTimedeltas(COLUMN_TIMEDELTAS))
     if args.hashtags is not None:
