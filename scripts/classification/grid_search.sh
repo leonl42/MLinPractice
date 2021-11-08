@@ -3,14 +3,15 @@
 mkdir -p data/classification
 
 # specify hyperparameter values
-values_of_k=("1 2 3 4 5 6 7 8 9 10")
+max_depth=("10 20 30 40")
+max_features=("2 3 4 5")
 
 
 # different execution modes
 if [ $1 = local ]
 then
     echo "[local execution]"
-    cmd="code/classification/classifier.sge"
+    cmd="scripts/classification/classifier.sge"
 elif [ $1 = grid ]
 then
     echo "[grid execution]"
@@ -21,8 +22,10 @@ else
 fi
 
 # do the grid search
-for k in $values_of_k
-do
-    echo $k
-    $cmd 'data/classification/clf_'"$k"'.pickle' --knn $k -s 42 --accuracy --kappa
+for d in $max_depth; do
+for f in $max_features; do
+    echo $d
+    echo $f
+    $cmd 'data/classification/clf_'"$k"'.pickle' --rndmforest 500 $d $f -s 42 --accuracy --kappa -f1
+done
 done
