@@ -52,5 +52,6 @@ class FeatureCollector(FeatureExtractor):
     def get_feature_names(self):
         feature_names = []
         for feature in self._features:
-            feature_names.append(feature.get_feature_name())
+            for feature_name in feature.get_feature_name():
+                feature_names.append(feature_name)
         return feature_names

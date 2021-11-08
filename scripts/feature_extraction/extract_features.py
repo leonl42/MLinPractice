@@ -11,9 +11,12 @@ Created on Wed Sep 29 11:00:24 2021
 import argparse, csv, pickle
 import pandas as pd
 import numpy as np
-from scripts.feature_extraction.character_length import CharacterLength
+from scripts.feature_extraction.feature_character_length import FeatureCharacterLength
 from scripts.feature_extraction.feature_collector import FeatureCollector
-from scripts.util import COLUMN_TWEET, COLUMN_LABEL, PANDAS_DTYPE
+from scripts.feature_extraction.feature_timedeltas import FeatureTimedeltas
+from scripts.feature_extraction.feature_hashtags import FeatureHashtags
+from scripts.feature_extraction.feature_ngrams import FeatureNGrams
+from scripts.util import COLUMN_TWEET, COLUMN_LABEL, PANDAS_DTYPE, COLUMN_TIMEDELTAS, SUFFIX_POST
 
 
 # setting up CLI
@@ -23,6 +26,9 @@ parser.add_argument("output_file", help = "path to the output pickle file")
 parser.add_argument("-e", "--export_file", help = "create a pipeline and export to the given location", default = None)
 parser.add_argument("-i", "--import_file", help = "import an existing pipeline from the given location", default = None)
 parser.add_argument("-c", "--char_length", action = "store_true", help = "compute the number of characters in the tweet")
+parser.add_argument("-t", "--timedeltas", action = "store_true", help = "convert preprocessed timedeltas into a numpy array")
+parser.add_argument("--hashtags", type = int, help = "number of most frequent hashtags to use for one hot encoding")
+parser.add_argument("--ngrams", nargs = '+', help = "use most common ngrams for one hot encoding")
 args = parser.parse_args()
 
 # load data
@@ -39,7 +45,13 @@ else:    # need to create FeatureCollector manually
     features = []
     if args.char_length:
         # character length of original tweet (without any changes)
-        features.append(CharacterLength(COLUMN_TWEET))
+        features.append(FeatureCharacterLength(COLUMN_TWEET))
+    if args.timedeltas:
+        features.append(FeatureTimedeltas(COLUMN_TIMEDELTAS))
+    if args.hashtags is not None:
+        features.append(FeatureHashtags(args.hashtags))
+    if args.ngrams is not None:
+        features.append(FeatureNGrams(int(args.ngrams[0]),int(args.ngrams[1]),COLUMN_TWEET+SUFFIX_POST))
     
     # create overall FeatureCollector
     feature_collector = FeatureCollector(features)
