@@ -62,15 +62,15 @@ These websites might save their data in different format. The format from websit
 1 could be: STREET,HOUSE_NOUMBER,POSTCODE while the format from website 2 could be: POSTCODE,STREET,HOUSE_NUMBER.
 So in the worst case, your machine learning model might interpret the postcode as the street and the other way around.
 
-The first goal of the preprocessing step is to bring the data into a uniform format. 
-The second goal of the preprocessing step is to represent the formatted data in such a way, that 
-data with the same meaning is represented the same. Of course, this means that valuable information could be lost,
-but this tradeoff will be discussed in the individual preprocessing steps.
+One goal of the preprocessing step is to bring the data into a uniform format. 
+Another goal of the preprocessing step is to represent the formatted data in such a way, that 
+data with the same meaning is represented in the same way. 
 
 For example, take the two sentences "I am cool", "i am so COOL". Its easy to see, at least for us humans, that these
 sentences mean almost the exact same thing. And in addition they have the same format, namely both are a string. But a 
 computer, without additional natural language processing, would consider them two completely different sentences, and this 
-is a problem. 
+is a problem. Of course, when trying to bring these two sentences into the same format, valuable information could be lost,
+but this tradeoff will be discussed in the individual preprocessing steps.
 
 I decided not to create an extra column with a suffix in the .csv file for every preprocessing step. Instead, I decided
 that, in most cases, each preprocessing step would overwrite an already existing column. This makes it easier for preprocessing
@@ -85,7 +85,7 @@ take a look at the dataset.
 
 ![Label distribution](data/plots/label_distribution.png)
 
-On the x-axis are integers representing threshold values and on the y-axis the number of tweets,
+On the x-axis are integers representing threshold values and on the y-axis the number of tweets 
 whose number of likes and retweets combined surpass this threshold.
 For a high threshold, consider roughly 300 or 400, there are only very few tweets which would be labeled as viral. This would lead
 to an uneven distribution of positive and negative samples in the data set (99.9% positive 0.01% negative), which leads to the
@@ -112,24 +112,27 @@ Here, the deltatime will be represented in seconds.
 The reference time used to calculate the timedeltas will be the twitter creation datetime, 
 as no tweet could have been posted before this. 
 
+### Removing Hashtags <a name="Removing Hashtags"></a>
 
 The following preprocessing steps will be about preprocessing the semantics of the actual tweet and not the metadata.
-
-### Removing Hashtags <a name="Removing Hashtags"></a>
 
 The dataset is formatted in such a way, that hashtags which were used are still present in the tweet and 
 are stored in a list in an extra column. Because this extra column will be used when getting the most used hashtags,
 having them still in the tweet will lead to the same information twice when analysing ngrams. For this reason,
 every word that starts with a "#", will be removed from the tweet. So the tweet: "I used a #hashtag"
 will become "I used a". On the internet, it is a convention to mention all hashtags at the end of the tweet. So
-a tweet would usually be structured like this in most cases: [tweet] [all hashtags]. Because the tweets
-are all about the same topic, namely data science, machine learning etc., the hashtags among all tweets will be 
-more or less the same. This means, the most frequent ngrams among all tweets will be combinations of different
+a tweet would usually be structured like this in most cases: [tweet] [all hashtags]. This means, that it is unlikely
+that the hashtag removal will remove important words from the middle of the tweet.
+
+Furthermore, if the hashtags wouldn't be removed, the ngram analysis would be problematic:
+Because the tweets are all about the same topic, namely data science, machine learning etc., 
+the hashtags among all tweets will be  more or less the same. 
+This means, the most frequent ngrams among all tweets will be combinations of different
 hashtags. But this information, which tweets contain which hashtags, is already encoded in another feature. So it 
 would not make sense to leave the hashtags in the tweet.
 
-Of course, one problem could be that the meaning of the tweet will be destroyed, e.g. if the user
-decides to use a hashtag in the sentence: "I #didn't do it" -> "I do it". But this problem will be
+Of course, one problem could be that the meaning of the tweet will be destroyed, e.g. in the rare
+case a user uses a hashtag in the middle of a sentence: "I #didn't do it" -> "I do it". But this problem will be
 neglected, as there is no "high end" natural language processing step in the pipeline.
 
 ### Punctuation remover <a name="Punctuation remover"></a>
@@ -150,7 +153,7 @@ Because we want to replace abbreviations with their long form later, so "isn’t
 careful to not delete the "’", because "isnt" will not be recognized by the abbreviation replacement any more. 
 
 To get a list with all the punctuation that should be removed, I decided to use pythons build in string.punctuation constant.
-And luckily the "’" symbol is not a part of that list, so there is no need to worry about the above problem.  
+And because the "’" symbol is not a part of that list, there is no need to worry about the above problem.  
 
 ### Lowercase <a name="Lowercase"></a>
 
@@ -166,7 +169,7 @@ But I assume that instances where cases matter appear relatively little to none 
 ### Abbrevation replacement <a name="Abbrevation replacement"></a>
 
 The English language consists of many abbreviations and short forms, like "isn't" or "doesn't". They unnecessarily boost the number
-of total, words and ngrams and are therefore superfluous, and therefore will be replaced with their corresponding long form. 
+of total words and ngrams and are therefore superfluous, and will therefore be replaced with their corresponding long form. 
 For this, I made a dictionary containing the most common abbreviations.
 
 ### Tokenization <a name="Tokenization"></a>
@@ -181,9 +184,9 @@ probability be only stopwords. If one now hot encodes these unigrams, almost eve
 are removed from the tweet.
 
 The stopwords are taken from nltks build in set of stopwords in the English language. Here, it is not feasible to analyse the tweets for their most frequent words
-and then remove these. This is, because we might remove different words from the training and test set, because fit_transform is called in the preprocessing 
-pipeline, and thus the frequency analysis is performed on both sets. If one wants to remove frequent words, it has to be implemented as a feature as here, fit is
-only called on the training set. But this will not be done here.
+and then remove these. This is, because we might remove different words from the training and test set, because fit_transform is called for every set in 
+the preprocessing pipeline. If one wants to remove frequent words, it has to be implemented as a feature because fit is
+only called on the training set in the feature extraction pipeline. But this will not be done here.
 
 However, an important aspect is to think about how important stopword removal really is. If the 1000 most common unigrams are one hot encoded, a dimension reduction method
 like, taking the features with the highest mutual information, will automatically dispose of these stopword features. But to lower the number of data to analyse and to lower the runtime,
@@ -203,7 +206,7 @@ for the word "ran" would be "run". This is done using nltks build in wordnet lem
 
 However, it is not advisable to just apply lemmatization to a given word, because this word could be a noun or a verb. Without further knowledge, if a word could have multiple
 positions, the lemmatizer will interpret this word as a noun, which could lead to a sentence with a completely different meaning. For this reason, the corresponding 
-part of speech tag will be transformed into a wordnet position and will be given as an argument to the lemmatizer
+part of speech tag will be transformed into a wordnet position and will be given as an argument to the lemmatizer.
 
 Of course, as mentioned earlier, this leads to a loss of information, e.g. the tense of a sentence. But the gained standardizing of the 
 dataset is worth more.
@@ -216,9 +219,8 @@ The following features will take either one of these steps into consideration.
 
 ### Hashtags and timedeltas <a name="Hashtags and timedeltas"></a>
 
-An important functionality of Twitter are hashtags. By mentioning a hashtag with the prefix "#" in your tweet, it will be associated
-with all other tweets that have this hashtag. In addition to that, users can search for specific hashtags and look at all these associated tweets.
-This makes hashtags a good way of finding relevant tweets. 
+An important functionality of Twitter are hashtags. Users can search for specific hashtags and look at all tweets which
+have used this hashtag. This makes hashtags a good way of finding relevant tweets. 
 
 To convert the hashtags into a feature, I count the frequency of each hashtag, take the 100 most frequent and use one hot encoding to determine
 if a tweet uses one of these hashtags. I am using this many hashtags, because I want the dimensionality reduction method to choose the best features, and
@@ -258,7 +260,7 @@ The following table shows the mean and standard deviation for each timedelta for
 | not viral | 348914949 | 81667289 | 8557411   | 9078451  | 51041    | 23111    |
 
 What one notices is that the mean and standard deviation for the date and time are, pretty close to each other, which
-makes them a not so good feature. While the values for the year timdelta differ for viral and not viral tweets, using the year 
+makes them a not so good feature. While the values for the year timedelta differ for viral and not viral tweets, using the year 
 as a feature may help to increase the performance on the dataset, but is not feasible for the application, because years don't 
 repeat themselves. So the only thing we would do is assign a sorted id to the tweet, which wouldn't have any influence when classifying.
 
@@ -333,7 +335,7 @@ they were extracted.
 
 While mutual information is great for determining the importance of specific features, pca yields better results. 
 Pca doesn't project onto the already existing axes, but rather onto the eigenvectors of the corresponding covariance matrix
-with the highest variance. The downside is that it is not possible to decide the importance of a single feature.
+with the highest explained variance. The downside is that it is not possible to decide the importance of a single feature.
 
 In order to determine the dimensionality of the new feature vector, one has to look at the explained variance, which
 can be calculated from the corresponding eigenvalue to an eigenvector.
