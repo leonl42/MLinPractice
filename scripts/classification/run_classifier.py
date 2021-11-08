@@ -15,6 +15,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn import svm
 from sklearn.neural_network import MLPClassifier
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.pipeline import make_pipeline
 from mlflow import log_metric, log_param, set_tracking_uri
 
@@ -29,6 +30,7 @@ parser.add_argument("-f", "--frequency", action = "store_true", help = "label fr
 parser.add_argument("--knn", type = int, help = "k nearest neighbor classifier with the specified value of k", default = None)
 parser.add_argument("-svm", "--svm", action = "store_true", help = "support vector machine classifier", default = None)
 parser.add_argument("--mlp", nargs="+",type = int, help = "multi Layer Perceptron classifier", default = None)
+parser.add_argument("--rndmforest", nargs="+", help = "random forest classifier", default = None)
 parser.add_argument("-a", "--accuracy", action = "store_true", help = "evaluate using accuracy")
 parser.add_argument("-k", "--kappa", action = "store_true", help = "evaluate using Cohen's kappa")
 parser.add_argument("-f1", "--f1", action = "store_true", help = "evaluate using F1 score")
@@ -90,6 +92,13 @@ else:   # manually set up a classifier
       params = {"classifier": "mlp"}
       standardizer = StandardScaler()
       classifier = make_pipeline(standardizer,MLPClassifier(max_iter=args.mlp[0],hidden_layer_sizes = tuple(args.mlp[1:len(args.mlp)])))
+    
+    elif args.rndmforest is not None:        
+       print("    Random Forest classifier")
+       log_param("classifier", "rndmforest")
+       params = {"classifier": "rndmforest"}
+       standardizer = StandardScaler()
+       classifier = make_pipeline(standardizer,RandomForestClassifier(n_estimators=int(args.rndmforest[0]),max_depth=int(args.rndmforest[1]),max_features=int(args.rndmforest[2])))
     
     classifier.fit(data["features"], data["labels"].ravel())
     log_param("dataset", "training")
